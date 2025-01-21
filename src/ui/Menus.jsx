@@ -1,9 +1,8 @@
-/* eslint-disable react/prop-types */
 import { createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
-import { useClickBody } from "../hooks/useClickBody";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const Menu = styled.div`
   display: flex;
@@ -71,6 +70,7 @@ const MenusContext = createContext();
 function Menus({ children }) {
   const [openId, setOpenId] = useState("");
   const [position, setPosition] = useState(null);
+
   const close = () => setOpenId("");
   const open = setOpenId;
 
@@ -82,6 +82,7 @@ function Menus({ children }) {
     </MenusContext.Provider>
   );
 }
+
 function Toggle({ id }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
@@ -104,9 +105,10 @@ function Toggle({ id }) {
 
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useClickBody(close);
+  const ref = useOutsideClick(close);
 
   if (openId !== id) return null;
+
   return createPortal(
     <StyledList position={position} ref={ref}>
       {children}
@@ -122,6 +124,7 @@ function Button({ children, icon, onClick }) {
     onClick?.();
     close();
   }
+
   return (
     <li>
       <StyledButton onClick={handleClick}>

@@ -1,14 +1,9 @@
-/* eslint-disable react/prop-types */
 import styled from "styled-components";
-import { formatCurrency } from "../../utils/helpers";
+
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
-
-import {
-  HiMiniDocumentDuplicate,
-  HiMiniPencil,
-  HiTrash,
-} from "react-icons/hi2";
+import { formatCurrency } from "../../utils/helpers";
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
@@ -53,11 +48,10 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
+
 function CabinRow({ cabin }) {
   const { isDeleting, deleteCabin } = useDeleteCabin();
-
   const { isCreating, createCabin } = useCreateCabin();
-  console.log(isCreating);
 
   const {
     id: cabinId,
@@ -68,6 +62,7 @@ function CabinRow({ cabin }) {
     image,
     description,
   } = cabin;
+
   function handleDuplicate() {
     createCabin({
       name: `Copy of ${name}`,
@@ -78,52 +73,52 @@ function CabinRow({ cabin }) {
       description,
     });
   }
-  return (
-    <>
-      <Table.Row>
-        <Img src={image} />
-        <Cabin>{name}</Cabin>
-        <div>First up to {maxCapacity} guests</div>
-        <Price>{formatCurrency(regularPrice)}</Price>
-        {discount ? (
-          <Discount>{formatCurrency(discount)}</Discount>
-        ) : (
-          <span>&mdash;</span>
-        )}
-        <div>
-          <Modal>
-            <Menus.Menu>
-              <Menus.Toggle id={cabinId} />
-              <Menus.List id={cabinId}>
-                <Menus.Button
-                  onClick={handleDuplicate}
-                  icon={<HiMiniDocumentDuplicate />}
-                >
-                  Duplicate
-                </Menus.Button>
-                <Modal.Open opens="edit">
-                  <Menus.Button icon={<HiMiniPencil />}>Edit</Menus.Button>
-                </Modal.Open>
-                <Modal.Open opens="delete">
-                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
-                </Modal.Open>
-              </Menus.List>
-              <Modal.Window name="edit">
-                <CreateCabinForm cabinToEdit={cabin} />
-              </Modal.Window>
 
-              <Modal.Window name="delete">
-                <ConfirmDelete
-                  resourceName="cabins"
-                  disabled={isDeleting}
-                  onConfirm={() => deleteCabin(cabinId)}
-                />
-              </Modal.Window>
-            </Menus.Menu>
-          </Modal>
-        </div>
-      </Table.Row>
-    </>
+  return (
+    <Table.Row>
+      <Img src={image} />
+      <Cabin>{name}</Cabin>
+      <div>Fits up to {maxCapacity} guests</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {discount ? (
+        <Discount>{formatCurrency(discount)}</Discount>
+      ) : (
+        <span>&mdash;</span>
+      )}
+      <div>
+        <Modal>
+          <Menus.Menu>
+            <Menus.Toggle id={cabinId} />
+
+            <Menus.List id={cabinId}>
+              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>
+                Duplicate
+              </Menus.Button>
+
+              <Modal.Open opens="edit">
+                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+              </Modal.Open>
+
+              <Modal.Open opens="delete">
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              </Modal.Open>
+            </Menus.List>
+
+            <Modal.Window name="edit">
+              <CreateCabinForm cabinToEdit={cabin} />
+            </Modal.Window>
+
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName="cabins"
+                disabled={isDeleting}
+                onConfirm={() => deleteCabin(cabinId)}
+              />
+            </Modal.Window>
+          </Menus.Menu>
+        </Modal>
+      </div>
+    </Table.Row>
   );
 }
 

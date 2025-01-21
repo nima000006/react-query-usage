@@ -3,12 +3,13 @@ import { getCabins } from "../../services/apiCabins";
 
 export function useCabins() {
   const {
-    isPending,
+    isLoading,
     data: cabins,
     error,
   } = useQuery({
-    queryKey: ["cabin"],
+    queryKey: ["cabins"],
     queryFn: getCabins,
   });
-  return { isPending, cabins, error };
+
+  return { isLoading, error, cabins };
 }
